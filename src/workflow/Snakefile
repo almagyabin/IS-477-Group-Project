@@ -1,1 +1,50 @@
+# Code by Obi (Weeks 10–12). Summary: automates the full workflow from acquisition to analysis using Snakemake.
 
+rule all:
+    input:
+        "results/rating_distribution.png",
+        "results/rating_vs_favorites.png",
+        "results/correlation.txt"
+
+rule acquire:
+    output:
+        "data/raw/anime.csv",
+        "data/raw/anime_full_data.json"
+    shell:
+        "python src/acquire_data.py"
+
+rule load_to_db:
+    input:
+        "data/raw/anime.csv",
+        "data/raw/anime_full_data.json"
+    output:
+        "db/anime.db"
+    shell:
+        "python src/load_to_db.py"
+
+rule integrate:
+    input:
+        "data/raw/anime.csv",
+        "data/raw/anime_full_data.json"
+    output:
+        "data/processed/anime_merged.parquet"
+    shell:
+        "python src/integrate_data.py"
+
+rule clean:
+    input:
+        "data/processed/anime_merged.parquet"
+    output:
+        "data/processed/anime_clean.parquet"
+    shell:
+        "python src/quality_cleaning.py"
+
+rule analyze:
+    input:
+        "data/processed/anime_clean.parquet"
+    output:
+        "results/rating_distribution.png",
+        "results/rating_vs_favorites.png",
+        "results/correlation.txt"
+    shell:
+        "python src/analysis_visualization.py"
