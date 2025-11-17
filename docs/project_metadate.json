@@ -1,1 +1,13 @@
+## MetaData
 
+{
+  "title": "Anime Ratings and Favorites Analysis",
+  "creators": [
+    {"name": "Obi Obah"},
+    {"name": "Alma Gyabin"}
+  ],
+  "description": "An IS 477 project analyzing user ratings and favorites across anime datasets using Python and automated workflows.",
+  "keywords": ["anime", "data integration", "ratings", "favorites", "IS 477"],
+  "version": "1.0",
+  "license": "MIT"
+}
