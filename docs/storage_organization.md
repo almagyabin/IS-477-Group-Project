@@ -1,4 +1,4 @@
-# Storage and Organization look again
+# Storage and Organization
 
 Project Folder Structure:
 
