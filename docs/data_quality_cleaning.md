@@ -1,4 +1,4 @@
-# Data Quality and Cleaning look again
+# Data Quality and Cleaning
 
 Quality Checks Performed:
 - Verified numeric fields (score_csv, favorites)
