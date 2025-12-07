@@ -2,12 +2,9 @@
 
 import hashlib
 import requests
+import hashlib
 from pathlib import Path
-
-def download_file(url: str, dest_path: Path) -> None:
-    response = requests.get(url)
-    response.raise_for_status()
-    dest_path.write_bytes(response.content)
+import sys
 
 def sha256_checksum(path: Path) -> str:
     h = hashlib.sha256()
@@ -23,14 +20,19 @@ if __name__ == "__main__":
     anime_csv_path = data_dir / "anime.csv"
     anime_json_path = data_dir / "anime_full_data.json"
 
-    anime_csv_url = "https://kaggle-url-for-anime-csv"
-    anime_json_url = "https://kaggle-url-for-anime-json"
-
+    # Check that files already exist (downloaded manually from Box / Kaggle)
+    missing = []
     if not anime_csv_path.exists():
-        download_file(anime_csv_url, anime_csv_path)
-
+        missing.append("anime.csv")
     if not anime_json_path.exists():
-        download_file(anime_json_url, anime_json_path)
+        missing.append("anime_full_data.json")
+
+    if missing:
+        print("The following raw data files are missing in data/raw/:")
+        for name in missing:
+            print(" -", name)
+        print("\nPlease download these files from Box and place them in data/raw/ before running the workflow.")
+        sys.exit(1)
 
     print("anime.csv SHA-256:", sha256_checksum(anime_csv_path))
     print("anime_full_data.json SHA-256:", sha256_checksum(anime_json_path))
