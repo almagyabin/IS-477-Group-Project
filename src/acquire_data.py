@@ -1,8 +1,6 @@
 # Code by Obi (Week 7). Summary: downloads raw anime datasets and computes SHA-256 checksums.
 
 import hashlib
-import requests
-import hashlib
 from pathlib import Path
 import sys
 
