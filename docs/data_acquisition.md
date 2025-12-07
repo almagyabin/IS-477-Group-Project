@@ -12,6 +12,8 @@ We use two anime datasets from Kaggle:
    Filename: anime_full_data.json  
    SHA-256: 94f2886883c929ea02e745b576ba1403e46bd371f4d0f719339fe38d07052384
 
+3. This the Output Folder link: https://uofi.box.com/s/6xhwtdmpfmuls4nwk0p22mlpwoe0hubq
+
 To Reproduce:
 1. Download both files from this Box link: https://uofi.box.com/s/3pe0ahrmk3szcoq81rr4a8xawknadyzu
 2. Save them into: data/raw/
