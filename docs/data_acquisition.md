@@ -3,16 +3,23 @@
 We use two anime datasets from Kaggle:
 
 1. Anime CSV  
-   Source: https://www.kaggle.com/datasets/vishalkalathil/anime-offline-database/data  
+   Original Source: https://www.kaggle.com/datasets/vishalkalathil/anime-offline-database/data  
    Filename: anime.csv  
-   SHA-256: <paste from script>
+   SHA-256: acb302f9e3328477a0ce438b986dd910629971433271ad37593ae9672a99601e
 
 2. Anime Full JSON  
-   Source: https://huggingface.co/datasets/realoperator42/anime-titles-dataset  
+   Original Source: https://huggingface.co/datasets/realoperator42/anime-titles-dataset  
    Filename: anime_full_data.json  
-   SHA-256: <paste from script>
+   SHA-256: 94f2886883c929ea02e745b576ba1403e46bd371f4d0f719339fe38d07052384
 
-To reproduce:
-1. Download both files from the Kaggle links above.
+To Reproduce:
+1. Download both files from this Box link: https://uofi.box.com/s/3pe0ahrmk3szcoq81rr4a8xawknadyzu
 2. Save them into: data/raw/
-3. Verify integrity using the provided SHA-256 hashes.
+3. Your folder structure should look like:
+   - data/raw/anime.csv
+   - data/raw/anime_full_data.json
+4. Verify the integrity of each file by comparing its SHA-256 checksum with the values listed above.
+5. Once the data is in place, run the full workflow:
+   - Command: snakemake -j 1
+
+6. This will execute all pipeline steps and generate the processed datasets and visual outputs.
