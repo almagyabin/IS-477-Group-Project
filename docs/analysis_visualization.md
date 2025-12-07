@@ -1,4 +1,4 @@
-# Analysis and Visualization look again
+# Analysis and Visualization
 
 Research Question 1:
 "What is the most common user rating score?"
@@ -16,4 +16,4 @@ Method:
 - Created scatter plot.
 Output: results/rating_vs_favorites.png
 
-Correlation result: <paste from correlation.txt>
+Correlation result: ~0.40
