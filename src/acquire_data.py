@@ -1,10 +1,5 @@
 # Code by Obi (Week 7). Summary: downloads raw anime datasets and computes SHA-256 checksums.
 
-
-# File: src/acquire_data.py
-# Code by Obi (Week 7). Summary: acquires raw data from Kaggle/HuggingFace when needed,
-# or verifies existing files and prints SHA-256.
-
 import hashlib
 from pathlib import Path
 import sys
@@ -62,8 +57,8 @@ def download_kaggle_csv(dest_dir: Path) -> bool:
     print("Attempting Kaggle API download for anime-dataset-2025.csv ...")
     try:
         api.dataset_download_file(
-            "rafidahmed816/anime-dataset-2025",   # dataset id
-            "anime-dataset-2025.csv",             # file name inside the dataset
+            "rafidahmed816/anime-dataset-2025",   
+            "anime-dataset-2025.csv",             
             path=str(dest_dir),
             force=True,
         )
@@ -75,7 +70,6 @@ def download_kaggle_csv(dest_dir: Path) -> bool:
     csv_path = dest_dir / "anime-dataset-2025.csv"
     zip_path = dest_dir / "anime-dataset-2025.csv.zip"
 
-    # If Kaggle created a .zip, extract it
     if zip_path.exists() and not csv_path.exists():
         import zipfile
         print("Extracting anime-dataset-2025.csv from zip...")
@@ -90,18 +84,15 @@ if __name__ == "__main__":
     data_dir = Path("data/raw")
     data_dir.mkdir(parents=True, exist_ok=True)
 
-    # UPDATED filenames
     anime_csv_path = data_dir / "anime-dataset-2025.csv"
     anime_json_path = data_dir / "anime_full_data.json"
 
     csv_exists = anime_csv_path.exists()
     json_exists = anime_json_path.exists()
 
-    # if CSV missing, try Kaggle
     if not csv_exists:
         csv_exists = download_kaggle_csv(data_dir)
 
-    # if JSON missing, try HuggingFace
     if not json_exists:
         hf_url = (
             "https://huggingface.co/datasets/realoperator42/anime-titles-dataset/"
