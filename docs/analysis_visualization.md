@@ -1,7 +1,7 @@
 # Analysis and Visualization
 
 Research Question 1:
-"What is the most common user rating score?"
+"What is the most common user rating score assigned to anime?"
 
 Method:
 - Computed mode of the score_csv column.
@@ -9,7 +9,7 @@ Method:
 Output: results/rating_distribution.png
 
 Research Question 2:
-"Does the rating correlate with favorites?"
+"Does a higher rating correlate with having more favorites?"
 
 Method:
 - Computed Pearson correlation between score_csv and favorites.
