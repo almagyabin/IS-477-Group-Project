@@ -1,14 +1,19 @@
 # Raw data files (stored in Box)
-data/raw/
+data/raw/*
+!data/raw/blank
+!data/raw/README
 
 # Processed data files (generated)
-data/processed/
+data/processed/*
+!data/processed/blank
 
 # Results (generated visualizations + correlation)
-results/
+results/*
+!results/blank
 
 # SQLite database (generated)
-db/
+db/*
+!db/blank
 
 # Snakemake runtime directory
 .snakemake/
