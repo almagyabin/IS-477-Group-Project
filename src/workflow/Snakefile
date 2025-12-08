@@ -8,14 +8,14 @@ rule all:
 
 rule acquire:
     output:
-        "data/raw/anime-dataset-2025.csv",
+        "data/raw/anime.csv",
         "data/raw/anime_full_data.json"
     shell:
         "python src/acquire_data.py"
 
 rule integrate:
     input:
-        "data/raw/anime-dataset-2025.csv",
+        "data/raw/anime.csv",
         "data/raw/anime_full_data.json"
     output:
         "data/processed/anime_merged.parquet"
