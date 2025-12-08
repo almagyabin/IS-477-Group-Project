@@ -64,7 +64,6 @@ def download_kaggle_csv(dest_dir: Path) -> bool:
         print(e, file=sys.stderr)
         return False
 
-    # Extract .zip if needed
     zip_path = dest_dir / "anime-dataset-2025.csv.zip"
     csv_path = dest_dir / "anime-dataset-2025.csv"
 
@@ -82,7 +81,6 @@ if __name__ == "__main__":
     data_dir = Path("data/raw")
     data_dir.mkdir(parents=True, exist_ok=True)
 
-    # Updated filenames
     anime_csv_path = data_dir / "anime-dataset-2025.csv"
     anime_json_path = data_dir / "anime_full_data.json"
 
