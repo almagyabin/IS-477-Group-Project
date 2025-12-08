@@ -16,7 +16,11 @@ def sha256_checksum(path: Path) -> str:
 
 def download_hf_json(url: str, dest: Path) -> bool:
     """Download public HuggingFace JSON dataset."""
-    import requests
+    try:
+        import requests
+    except ImportError:
+        print("ERROR: requests package not installed.", file=sys.stderr)
+        return False
 
     print(f"Downloading HuggingFace JSON from {url} ...")
     resp = requests.get(url, stream=True)
@@ -32,27 +36,70 @@ def download_hf_json(url: str, dest: Path) -> bool:
     return True
 
 
+def download_kaggle_csv(dest_dir: Path) -> bool:
+    """
+    Attempt to download the anime CSV via Kaggle API.
+    Returns True if anime-dataset-2025.csv exists at the end, False otherwise.
+    """
+    try:
+        from kaggle.api.kaggle_api_extended import KaggleApi
+    except ImportError:
+        print("Kaggle API not installed. Skipping Kaggle download.", file=sys.stderr)
+        return False
+
+    api = KaggleApi()
+    try:
+        api.authenticate()
+    except Exception as e:
+        print("Failed to authenticate with Kaggle. Skipping Kaggle download.", file=sys.stderr)
+        print(e, file=sys.stderr)
+        return False
+
+    print("Attempting Kaggle API download for anime-dataset-2025.csv ...")
+    print("Dataset URL: https://www.kaggle.com/datasets/rafidahmed816/anime-dataset-2025")
+
+    try:
+        api.dataset_download_file(
+            "rafidahmed816/anime-dataset-2025",  # dataset id (adjust if needed)
+            "anime-dataset-2025.csv",            # file name inside dataset
+            path=str(dest_dir),
+            force=True,
+        )
+    except Exception as e:
+        print("Kaggle API download failed. This is expected if the file or dataset name is different.", file=sys.stderr)
+        print(e, file=sys.stderr)
+        return False
+
+    csv_path = dest_dir / "anime-dataset-2025.csv"
+    zip_path = dest_dir / "anime-dataset-2025.csv.zip"
+
+    # If Kaggle created a .zip, extract it
+    if zip_path.exists() and not csv_path.exists():
+        import zipfile
+        print("Extracting anime-dataset-2025.csv from zip...")
+        with zipfile.ZipFile(zip_path, "r") as zf:
+            zf.extract("anime-dataset-2025.csv", dest_dir)
+        zip_path.unlink()
+
+    return csv_path.exists()
+
+
 if __name__ == "__main__":
     data_dir = Path("data/raw")
     data_dir.mkdir(parents=True, exist_ok=True)
 
-    # Your original filenames
-    anime_csv_path = data_dir / "anime.csv"
+    # filenames used in the project
+    anime_csv_path = data_dir / "anime-dataset-2025.csv"
     anime_json_path = data_dir / "anime_full_data.json"
 
     csv_exists = anime_csv_path.exists()
     json_exists = anime_json_path.exists()
 
-    # CSV must be manually downloaded
+    # Try Kaggle for the CSV if it doesn't exist yet
     if not csv_exists:
-        print(
-            "anime.csv is missing.\n"
-            "Please download it manually and place it in data/raw/",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+        csv_exists = download_kaggle_csv(data_dir)
 
-    # JSON can be downloaded from HuggingFace automatically
+    # Try HuggingFace for the JSON if it doesn't exist yet
     if not json_exists:
         hf_url = (
             "https://huggingface.co/datasets/realoperator42/anime-titles-dataset/"
@@ -60,14 +107,19 @@ if __name__ == "__main__":
         )
         json_exists = download_hf_json(hf_url, anime_json_path)
 
+    missing = []
+    if not csv_exists:
+        missing.append("anime-dataset-2025.csv")
     if not json_exists:
-        print(
-            "anime_full_data.json is missing and could not be downloaded.\n"
-            "Please download it manually and place it in data/raw/",
-            file=sys.stderr,
-        )
+        missing.append("anime_full_data.json")
+
+    if missing:
+        print("\nThe following files are missing and could not be downloaded automatically:")
+        for f in missing:
+            print(" -", f)
+        print("\nPlease download these files from Box and place them in data/raw/")
         sys.exit(1)
 
-    # Print hashes
-    print("anime.csv SHA-256:", sha256_checksum(anime_csv_path))
+    # Print SHA-256 hashes for documentation
+    print("anime-dataset-2025.csv SHA-256:", sha256_checksum(anime_csv_path))
     print("anime_full_data.json SHA-256:", sha256_checksum(anime_json_path))
