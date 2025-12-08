@@ -4,7 +4,7 @@ Project Folder Structure:
 
 project/
   data/
-    raw/              # downloaded Kaggle files
+    raw/              # downloaded data files
     processed/        # merged + cleaned files
   db/                 # SQLite database
   results/            # plots and result files
@@ -13,6 +13,6 @@ project/
   env/                # requirements and environment files
 
 Naming Conventions:
-- All raw data uses original Kaggle filenames.
+- All raw data uses original filenames.
 - All processed files are stored as .parquet.
 - Workflow outputs are stored in results/.
