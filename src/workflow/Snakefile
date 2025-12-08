@@ -13,15 +13,6 @@ rule acquire:
     shell:
         "python src/acquire_data.py"
 
-rule load_to_db:
-    input:
-        "data/raw/anime-dataset-2025.csv",
-        "data/raw/anime_full_data.json"
-    output:
-        "db/anime.db"
-    shell:
-        "python src/load_to_db.py"
-
 rule integrate:
     input:
         "data/raw/anime-dataset-2025.csv",
