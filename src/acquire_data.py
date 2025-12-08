@@ -1,7 +1,5 @@
 # Code by Obi (Week 7). Summary: downloads raw anime datasets and computes SHA-256 checksums.
 
-# File: src/acquire_data.py
-# Code by Obi (Week 7). Summary: acquires raw data from Kaggle/HuggingFace when needed, or verifies existing files and prints SHA-256.
 
 import hashlib
 from pathlib import Path
@@ -53,7 +51,6 @@ def download_kaggle_csv(dest_dir: Path) -> bool:
         return False
 
     print("Downloading anime.csv from Kaggle using Kaggle API ...")
-    # Dataset: vishalkalathil/anime-offline-database, file: anime.csv
     api.dataset_download_file(
         "vishalkalathil/anime-offline-database",
         "anime.csv",
@@ -64,7 +61,6 @@ def download_kaggle_csv(dest_dir: Path) -> bool:
     csv_path = dest_dir / "anime.csv"
     zip_path = dest_dir / "anime.csv.zip"
 
-    # In some cases Kaggle may create a .zip file; handle that too.
     if zip_path.exists() and not csv_path.exists():
         import zipfile
 
@@ -87,23 +83,19 @@ if __name__ == "__main__":
     anime_csv_path = data_dir / "anime.csv"
     anime_json_path = data_dir / "anime_full_data.json"
 
-    # 1. If files already exist (e.g., downloaded from Box), just verify and print hashes.
     csv_exists = anime_csv_path.exists()
     json_exists = anime_json_path.exists()
 
     if not csv_exists:
-        # Try to download from Kaggle using the Kaggle API.
         csv_exists = download_kaggle_csv(data_dir)
 
     if not json_exists:
-        # Try to download JSON directly from HuggingFace.
         hf_url = (
             "https://huggingface.co/datasets/realoperator42/anime-titles-dataset/"
             "resolve/main/anime_full_data.json"
         )
         json_exists = download_hf_json(hf_url, anime_json_path)
 
-    # If still missing, give a clear message and fail.
     missing = []
     if not csv_exists:
         missing.append("anime.csv")
@@ -117,6 +109,5 @@ if __name__ == "__main__":
         print("\nPlease download these files from Box and place them in data/raw/ before running the workflow.")
         sys.exit(1)
 
-    # Compute and print SHA-256 checksums for documentation.
     print("anime.csv SHA-256:", sha256_checksum(anime_csv_path))
     print("anime_full_data.json SHA-256:", sha256_checksum(anime_json_path))
