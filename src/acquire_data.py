@@ -36,14 +36,12 @@ if __name__ == "__main__":
     data_dir = Path("data/raw")
     data_dir.mkdir(parents=True, exist_ok=True)
 
-    # Your original filenames
     anime_csv_path = data_dir / "anime.csv"
     anime_json_path = data_dir / "anime_full_data.json"
 
     csv_exists = anime_csv_path.exists()
     json_exists = anime_json_path.exists()
 
-    # CSV must be manually downloaded
     if not csv_exists:
         print(
             "anime.csv is missing.\n"
@@ -52,7 +50,6 @@ if __name__ == "__main__":
         )
         sys.exit(1)
 
-    # JSON can be downloaded from HuggingFace automatically
     if not json_exists:
         hf_url = (
             "https://huggingface.co/datasets/realoperator42/anime-titles-dataset/"
@@ -68,7 +65,6 @@ if __name__ == "__main__":
         )
         sys.exit(1)
 
-    # Print hashes
     print("anime.csv SHA-256:", sha256_checksum(anime_csv_path))
     print("anime_full_data.json SHA-256:", sha256_checksum(anime_json_path))
 
