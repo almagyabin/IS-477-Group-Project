@@ -1,12 +1,22 @@
 # Code by Obi (Week 7). Summary: downloads raw anime datasets and computes SHA-256 checksums.
 
 
+# File: src/acquire_data.py
+# Code by Obi (Week 7). Summary: acquires raw data from Kaggle/HuggingFace when needed,
+# or verifies existing files and prints SHA-256.
+
 import hashlib
 from pathlib import Path
 import sys
 
 def sha256_checksum(path: Path) -> str:
-    """Compute SHA-256 checksum for file."""
+    h = hashlib.sha256()
+    with path.open("rb", "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def sha256_checksum(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
@@ -14,7 +24,6 @@ def sha256_checksum(path: Path) -> str:
     return h.hexdigest()
 
 def download_hf_json(url: str, dest: Path) -> bool:
-    """Download public HuggingFace JSON dataset."""
     try:
         import requests
     except ImportError:
@@ -35,7 +44,7 @@ def download_hf_json(url: str, dest: Path) -> bool:
     return True
 
 def download_kaggle_csv(dest_dir: Path) -> bool:
-    """Attempt to download the anime CSV via Kaggle API. If it fails, return False."""
+    """Download anime-dataset-2025.csv from Kaggle using the Kaggle API."""
     try:
         from kaggle.api.kaggle_api_extended import KaggleApi
     except ImportError:
@@ -51,25 +60,25 @@ def download_kaggle_csv(dest_dir: Path) -> bool:
         return False
 
     print("Attempting Kaggle API download for anime-dataset-2025.csv ...")
-
     try:
         api.dataset_download_file(
-            "vishalkalathil/anime-offline-database",
-            "anime-dataset-2025.csv",
+            "rafidahmed816/anime-dataset-2025",   # dataset id
+            "anime-dataset-2025.csv",             # file name inside the dataset
             path=str(dest_dir),
             force=True,
         )
     except Exception as e:
-        print("Kaggle API download failed. This is expected if the file does not exist.", file=sys.stderr)
+        print("Kaggle API download failed.", file=sys.stderr)
         print(e, file=sys.stderr)
         return False
 
-    zip_path = dest_dir / "anime-dataset-2025.csv.zip"
     csv_path = dest_dir / "anime-dataset-2025.csv"
+    zip_path = dest_dir / "anime-dataset-2025.csv.zip"
 
+    # If Kaggle created a .zip, extract it
     if zip_path.exists() and not csv_path.exists():
         import zipfile
-        print("Extracting anime-dataset-2025.csv from zip file...")
+        print("Extracting anime-dataset-2025.csv from zip...")
         with zipfile.ZipFile(zip_path, "r") as zf:
             zf.extract("anime-dataset-2025.csv", dest_dir)
         zip_path.unlink()
@@ -81,15 +90,18 @@ if __name__ == "__main__":
     data_dir = Path("data/raw")
     data_dir.mkdir(parents=True, exist_ok=True)
 
+    # UPDATED filenames
     anime_csv_path = data_dir / "anime-dataset-2025.csv"
     anime_json_path = data_dir / "anime_full_data.json"
 
     csv_exists = anime_csv_path.exists()
     json_exists = anime_json_path.exists()
 
+    # if CSV missing, try Kaggle
     if not csv_exists:
         csv_exists = download_kaggle_csv(data_dir)
 
+    # if JSON missing, try HuggingFace
     if not json_exists:
         hf_url = (
             "https://huggingface.co/datasets/realoperator42/anime-titles-dataset/"
